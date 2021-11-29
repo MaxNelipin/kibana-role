@@ -1,2 +1,3 @@
 ---
 kibana_version: "7.15.0"
+el_instance_ip: "{{ hostvars['el-instance']['ansible_facts']['default_ipv4']['address'] }}"
