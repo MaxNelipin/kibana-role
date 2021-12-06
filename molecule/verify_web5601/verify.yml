@@ -1,0 +1,21 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: start kibana
+    shell: nohup /usr/share/kibana/bin/kibana --allow-root </dev/null >/dev/null 2>&1 &
+    changed_when: false
+  - name: Wait for port 5601
+    wait_for:
+      port: 5601
+      delay: 40
+    register: wait_ok
+  - name: Confirm that 200
+    uri:
+      url: "http://127.0.0.1:5601"
+      status_code: 200
+    register: ok_200
+  - name: assert port
+    assert:
+      that: ok_200.status == 200

@@ -1,0 +1,19 @@
+---
+- name: "Download kibana's apt"
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-amd64.deb"
+    dest: "/tmp/kibana-{{ kibana_version }}-amd64.deb"
+  register: download_kibana
+  until: download_kibana is succeeded
+- name: Install Kibana
+  become: true
+  apt:
+    deb: "/tmp/kibana-{{ kibana_version }}-amd64.deb"
+    state: present
+- name: Configure kibana
+  become: true
+  template:
+    mode: 0644
+    src: kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+  notify: restart kibana
